@@ -32,12 +32,12 @@ def getLocations(listing):
     num = str(len(listing["locations"])) + " locations"
     return f'<details><summary>**{num}**</summary>{locations}</details>'
 
-def getSponsorship(listing):
+def checkSponsorship(listing):
     if listing["sponsorship"] == "Does Not Offer Sponsorship":
-        return " 🛂"
+        return false
     elif listing["sponsorship"] == "U.S. Citizenship is Required":
-        return " 🇺🇸"
-    return ""
+        return false
+    return true
 
 def getLink(listing):
     if not listing["active"]:
@@ -69,8 +69,12 @@ def create_md_table(listings):
         company_url = listing["company_url"]
         company = f"**[{listing['company_name']}]({company_url})**" if len(company_url) > 0 else listing["company_name"]
         location = getLocations(listing)
-        position = listing["title"] + getSponsorship(listing)
-        link = getLink(listing)
+        
+        #ignore listing if checkSponsorship fails
+                    
+        position = listing["title"]
+        if checkSponsorship(listing) == true:
+            link = getLink(listing)
 
         # parse listing date
         year_month = datetime.fromtimestamp(listing["date_posted"]).strftime('%b %Y')
