@@ -34,10 +34,10 @@ def getLocations(listing):
 
 def checkSponsorship(listing):
     if listing["sponsorship"] == "Does Not Offer Sponsorship":
-        return false
+        return False
     elif listing["sponsorship"] == "U.S. Citizenship is Required":
-        return false
-    return true
+        return False
+    return True
 
 def getLink(listing):
     if not listing["active"]:
@@ -70,11 +70,12 @@ def create_md_table(listings):
         company = f"**[{listing['company_name']}]({company_url})**" if len(company_url) > 0 else listing["company_name"]
         location = getLocations(listing)
         
-        #ignore listing if checkSponsorship fails
+        #only include international students listings that are open
                     
         position = listing["title"]
-        if checkSponsorship(listing) == true:
-            link = getLink(listing)
+        if checkSponsorship(listing) == True:
+            if getLink(listing) != "🔒":
+                link = getLink(listing)
 
         # parse listing date
         year_month = datetime.fromtimestamp(listing["date_posted"]).strftime('%b %Y')
